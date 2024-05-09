@@ -1,0 +1,28 @@
+package org.unibuc.entities.enums;
+
+public enum Style {
+    CLASSIC,
+    MODERN,
+    POSTMODERN,
+    CONTEMPORARY,
+    AVANTGARDE,
+    EXPERIMENTAL,
+    MINIMALISM,
+    SURREALISM,
+    IMPRESSIONISM,
+    EXPRESSIONISM,
+    CUBISM,
+    REALISM,
+    ROMANTICISM,
+    BAROQUE,
+    ROCOCO,
+    NEOCLASSICISM,
+    RENAISSANCE,
+    GOTHIC,
+    BYZANTINE,
+    ROMANESQUE,
+    MEDIEVAL,
+    PREHISTORIC,
+    ANCIENT,
+    TRADITIONAL,
+}
