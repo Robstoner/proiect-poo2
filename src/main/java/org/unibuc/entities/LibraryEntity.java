@@ -10,5 +10,9 @@ import java.util.UUID;
 public abstract class LibraryEntity {
     private UUID id;
 
+    public LibraryEntity(UUID id) {
+        this.id = id;
+    }
+
     public abstract String toCSV();
 }

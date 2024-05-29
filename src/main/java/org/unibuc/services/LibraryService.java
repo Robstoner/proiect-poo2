@@ -4,6 +4,8 @@ import org.unibuc.entities.Artwork;
 import org.unibuc.entities.Author;
 import org.unibuc.entities.Book;
 import org.unibuc.entities.Reader;
+import org.unibuc.exceptions.BookAlreadyBorrowedException;
+import org.unibuc.exceptions.BookNotFoundException;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -32,8 +34,10 @@ public class LibraryService implements LibraryServiceInterface {
 
     @Override
     public UUID addAuthor(Author author) {
-        UUID authorId = UUID.randomUUID();
-        author.setId(authorId);
+        if (author.getId() == null) {
+            author.setId(UUID.randomUUID());
+        }
+        UUID authorId = author.getId();
         authors.put(authorId, author);
         return authorId;
     }
@@ -45,8 +49,10 @@ public class LibraryService implements LibraryServiceInterface {
 
     @Override
     public UUID addBook(Book book) {
-        UUID bookId = UUID.randomUUID();
-        book.setId(bookId);
+        if (book.getId() == null) {
+            book.setId(UUID.randomUUID());
+        }
+        UUID bookId = book.getId();
         books.put(bookId, book);
         return bookId;
     }
@@ -58,8 +64,10 @@ public class LibraryService implements LibraryServiceInterface {
 
     @Override
     public UUID addReader(Reader reader) {
-        UUID readerId = UUID.randomUUID();
-        reader.setId(readerId);
+        if (reader.getId() == null) {
+            reader.setId(UUID.randomUUID());
+        }
+        UUID readerId = reader.getId();
         readers.put(readerId, reader);
         return readerId;
     }
@@ -71,8 +79,10 @@ public class LibraryService implements LibraryServiceInterface {
 
     @Override
     public UUID addArtwork(Artwork artwork) {
-        UUID artworkId = UUID.randomUUID();
-        artwork.setId(artworkId);
+        if (artwork.getId() == null) {
+            artwork.setId(UUID.randomUUID());
+        }
+        UUID artworkId = artwork.getId();
         artworks.put(artworkId, artwork);
         return artworkId;
     }
@@ -83,18 +93,53 @@ public class LibraryService implements LibraryServiceInterface {
     }
 
     @Override
-    public void borrowBook(UUID readerId, UUID bookId) {
+    public void borrowBook(UUID readerId, UUID bookId) throws BookAlreadyBorrowedException, BookNotFoundException {
         Reader reader = readers.get(readerId);
         Book book = books.get(bookId);
+        if (reader == null || book == null) {
+            throw new BookNotFoundException();
+        }
+        if (reader.getBorrowedBooks().contains(book)) {
+            throw new BookAlreadyBorrowedException();
+        }
+        if (book.getIsBorrowed()) {
+            throw new BookAlreadyBorrowedException();
+        }
         reader.getBorrowedBooks().add(book);
         book.setIsBorrowed(true);
     }
 
     @Override
-    public void returnBook(UUID readerId, UUID bookId) {
+    public void returnBook(UUID readerId, UUID bookId) throws BookNotFoundException {
         Reader reader = readers.get(readerId);
         Book book = books.get(bookId);
+        if (reader == null || book == null) {
+            throw new BookNotFoundException();
+        }
+        if (!reader.getBorrowedBooks().contains(book)) {
+            throw new BookNotFoundException();
+        }
         reader.getBorrowedBooks().remove(book);
         book.setIsBorrowed(false);
+    }
+
+    @Override
+    public HashMap<UUID, Author> getAuthors() {
+        return authors;
+    }
+
+    @Override
+    public HashMap<UUID, Book> getBooks() {
+        return books;
+    }
+
+    @Override
+    public HashMap<UUID, Reader> getReaders() {
+        return readers;
+    }
+
+    @Override
+    public HashMap<UUID, Artwork> getArtworks() {
+        return artworks;
     }
 }
